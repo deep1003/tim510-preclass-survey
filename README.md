@@ -6,6 +6,6 @@ The page is designed for pre-class diagnosis of students' research interests, da
 
 ## Response storage
 
-The page stores a student's response in the current browser using localStorage.
+The page opens a prefilled GitHub Issue when students click the save button.
 
-GitHub Pages is static hosting, so it does not provide central server-side response storage by itself. For centralized collection, connect the form to Google Sheets Apps Script, Supabase, or another backend.
+Students must submit the prefilled issue on GitHub. Responses are then collected in the repository Issues list under the `survey-response` label.
