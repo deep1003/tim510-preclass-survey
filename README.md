@@ -6,6 +6,6 @@ The page is designed for pre-class diagnosis of students' research interests, da
 
 ## Response storage
 
-The page opens a prefilled GitHub Issue when students click the save button.
+The page sends responses directly to the TIM51001 Survey Store API when students click the save button.
 
-Students must submit the prefilled issue on GitHub. Responses are then collected in the repository Issues list under the `survey-response` label.
+Responses are stored in the `survey_responses` D1 table attached to the survey store site.

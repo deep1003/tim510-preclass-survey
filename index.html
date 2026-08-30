@@ -183,6 +183,11 @@
       background: var(--accent-dark);
     }
 
+    button:disabled {
+      cursor: wait;
+      opacity: 0.72;
+    }
+
     .secondary {
       color: var(--ink);
       background: #e8eef5;
@@ -391,10 +396,10 @@
         <p class="hint">응답 확인을 위해 필요한 정보입니다.</p>
         <div class="identity-grid">
           <label class="text-label">학번
-            <input type="text" name="student_id" placeholder="예: 20261234">
+            <input type="text" name="student_id" placeholder="예: 20261234" autocomplete="off" required>
           </label>
           <label class="text-label">이름
-            <input type="text" name="student_name" placeholder="예: 홍길동">
+            <input type="text" name="student_name" placeholder="예: 홍길동" autocomplete="name" required>
           </label>
         </div>
       </fieldset>
@@ -410,6 +415,8 @@
   <script>
     const form = document.querySelector("#survey");
     const statusEl = document.querySelector("#status");
+    const saveBtn = document.querySelector("#saveBtn");
+    const surveyApiUrl = "https://tim510-preclass-survey-store.deep1003185672.chatgpt.site/api/responses";
 
     const questionLabels = {
       research_topics: "1. 관심 있는 연구 주제",
@@ -467,28 +474,53 @@
       return data;
     }
 
-    function formatText(data) {
-      return Object.entries(questionLabels)
-        .map(([key, label]) => {
-          const value = Array.isArray(data[key]) ? data[key].join(", ") : data[key];
-          return `## ${label}\n${value || "(미응답)"}`;
-        })
-        .join("\n\n");
+    function validateIdentity(data) {
+      if (!data.student_id) {
+        statusEl.textContent = "학번을 입력해 주세요.";
+        form.querySelector('[name="student_id"]').focus();
+        return false;
+      }
+
+      if (!data.student_name) {
+        statusEl.textContent = "이름을 입력해 주세요.";
+        form.querySelector('[name="student_name"]').focus();
+        return false;
+      }
+
+      return true;
     }
 
-    function saveToSite() {
+    async function saveToSite() {
       const data = getResponses();
-      const title = `TIM51001 설문 응답 ${new Date().toLocaleString("ko-KR")}`;
-      const body = formatText(data);
-      const issueUrl = new URL("https://github.com/deep1003/tim510-preclass-survey/issues/new");
-      issueUrl.searchParams.set("title", title);
-      issueUrl.searchParams.set("body", body);
-      issueUrl.searchParams.set("labels", "survey-response");
-      window.open(issueUrl.toString(), "_blank", "noopener,noreferrer");
-      statusEl.textContent = "GitHub Issue 작성 화면이 열렸습니다. Submit new issue를 눌러 저장을 완료해 주세요.";
+
+      if (!validateIdentity(data)) return;
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = "저장 중";
+      statusEl.textContent = "응답을 저장하고 있습니다.";
+
+      try {
+        const response = await fetch(surveyApiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+          throw new Error(`Save failed with status ${response.status}`);
+        }
+
+        statusEl.textContent = "저장되었습니다.";
+      } catch (error) {
+        console.error(error);
+        statusEl.textContent = "저장에 실패했습니다. 잠시 후 다시 시도해 주세요.";
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "저장";
+      }
     }
 
-    document.querySelector("#saveBtn").addEventListener("click", saveToSite);
+    saveBtn.addEventListener("click", saveToSite);
   </script>
 </body>
 </html>
