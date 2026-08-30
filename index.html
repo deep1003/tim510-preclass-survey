@@ -141,6 +141,18 @@
       margin-top: 12px;
     }
 
+    .identity-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .text-label {
+      display: grid;
+      gap: 6px;
+      font-weight: 700;
+    }
+
     .actions {
       position: sticky;
       bottom: 0;
@@ -214,7 +226,7 @@
       <h1>강의 전 연구 관심 설문</h1>
       <p class="intro">
         이 설문은 수강생이 어떤 연구 주제, 데이터, 분석 방법에 관심이 있는지 파악하기 위한 것입니다.
-        정답은 없으며, 아직 구체적인 연구 주제가 없어도 편하게 선택해 주세요.
+        9월 4일 첫 수업 전에 편하게 작성해 주세요.
       </p>
     </div>
   </header>
@@ -372,6 +384,19 @@
         <textarea name="research_question" placeholder="예: 생성형 AI 활용이 울산 제조기업의 생산성에 미치는 영향"></textarea>
       </fieldset>
 
+      <fieldset>
+        <legend>11. 학번과 이름을 적어 주세요.</legend>
+        <p class="hint">응답 확인을 위해 필요한 정보입니다.</p>
+        <div class="identity-grid">
+          <label class="text-label">학번
+            <input type="text" name="student_id" placeholder="예: 20261234">
+          </label>
+          <label class="text-label">이름
+            <input type="text" name="student_name" placeholder="예: 홍길동">
+          </label>
+        </div>
+      </fieldset>
+
       <div class="actions">
         <button class="primary" type="button" id="saveBtn">저장</button>
         <span class="status" id="status" aria-live="polite"></span>
@@ -402,7 +427,9 @@
       analysis_level: "8. 관심 있는 분석 수준",
       analysis_level_other: "8. 직접 입력 (기타)",
       favorite_sources: "9. 관심 있는 자료 제목",
-      research_question: "10. 개인 연구보고서 주제 또는 제목"
+      research_question: "10. 개인 연구보고서 주제 또는 제목",
+      student_id: "11. 학번",
+      student_name: "11. 이름"
     };
 
     document.querySelectorAll(".limited").forEach((group) => {
